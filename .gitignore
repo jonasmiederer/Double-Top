@@ -1,1 +1,4 @@
 .DS_Store
+# sound source files: they are embedded in index.html
+*.mp4
+*.ogg

@@ -28,6 +28,5 @@ Everything is saved automatically in the browser's local storage on that one dev
 | File | Purpose |
 | --- | --- |
 | `index.html` | The whole app: HTML, CSS, JavaScript, with the sounds embedded as base64 |
-| `*.mp4`, `*.ogg` | Source files of the embedded sounds (not loaded at runtime) |
 
 Each version raises `APP_VERSION` in `index.html` (it's shown in the header) and is committed as its own commit.
