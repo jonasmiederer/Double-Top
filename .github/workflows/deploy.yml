@@ -29,6 +29,7 @@ jobs:
           --exclude ".DS_Store"
           --exclude "*.mp4"
           --exclude "*.ogg"
+          --exclude "*.png"
       # The CloudFront distribution id is not hard-wired: look it up at deploy
       # time by its alias (doubletop.jonas-miederer.de) so the infra stack owns
       # the distribution and nothing needs manual syncing. Fail clearly if the
