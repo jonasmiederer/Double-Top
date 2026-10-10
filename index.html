@@ -504,6 +504,8 @@ nav button{min-height:40px}
 /* long option texts must not widen the page */
 .form>*{min-width:0}
 .form select,.form input{width:100%}
+/* a note that explains the control above it: spans both grid columns, sits tight under it */
+.form .fnote{grid-column:1/-1;margin:-.25rem 0 .15rem}
 .bracket{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
 .round{scroll-snap-align:start}
 .gsw{gap:.4rem}
@@ -589,7 +591,7 @@ nav button{min-height:40px}
 <script>
 (function () {
   'use strict';
-  const APP_VERSION = 'v14'; // bump for every new version; versions are tracked as git commits of index.html
+  const APP_VERSION = 'v15'; // bump for every new version; versions are tracked as git commits of index.html
   const KEY = 'darts-party-tournament-v1'; // storage schema key – keep it, so saved games survive app updates
   const BYE = 'BYE';
   const IMPOSSIBLE = new Set([163, 166, 169, 172, 173, 175, 176, 178, 179]); // not reachable with 3 darts
@@ -1822,8 +1824,9 @@ nav button{min-height:40px}
       </div>
       ${started ? '<p class="muted small">The tournament is running – reset it below to switch mode.</p>' : ''}
       <div class="form">
-        ${quick ? '' : `<label for="set-format">Format</label>${sel('format', [['groups', 'Group game (finishing order) → knockout'], ['teams', 'Groups play as teams → knockout']], st.format, started)}`}
-        <label for="set-game">Game</label>${sel('game', [101, 170, 301, 501, 701].map((n) => [String(n), String(n)]).concat([['cricket', 'Cricket (15–20 + Bull)'], ['elim', 'Elimination 301 (count up, knock others back)']]), ['cricket', 'elim'].includes(st.game) ? st.game : String(st.startScore))}
+        ${quick ? '' : `<label for="set-format">Format</label>${sel('format', [['groups', 'Group game'], ['teams', 'Groups play as team']], st.format, started)}
+        <p class="muted small fnote">${teams ? 'Each group is a team sharing one score; players take turns (one visit each) and teams go straight into a knockout.' : 'Players compete individually in groups; the finishing order in each group decides who advances to the knockout.'}</p>`}
+        <label for="set-game">Game</label>${sel('game', [101, 301, 501, 701].map((n) => [String(n), String(n)]).concat([['cricket', 'Cricket (15–20 + Bull)'], ['elim', 'Elimination 301 (count up, knock others back)']]), ['cricket', 'elim'].includes(st.game) ? st.game : String(st.startScore))}
         ${st.game === 'cricket'
           ? `<label for="set-cricketMode">Cricket scoring</label>${sel('cricketMode', [['standard', 'Standard – most points wins'], ['cutthroat', 'Cut-throat – points go to opponents, lowest wins']], st.cricketMode)}`
           : `<label for="set-doubleOut">Finish</label>${sel('doubleOut', [['0', 'Straight out (any segment)'], ['1', 'Double out']], st.doubleOut ? '1' : '0')}`}
