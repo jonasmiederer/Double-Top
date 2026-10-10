@@ -1,0 +1,43 @@
+env:
+  AWS_REGION: eu-central-1
+  BUCKET: doubletop.jonas-miederer.de
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{env.AWS_REGION}}
+      # Sync the static site to the S3 bucket (region eu-central-1). The bucket
+      # name matches the subdomain. Exclude repo/meta files and the sound source
+      # files (they are embedded as base64 in index.html).
+      - name: Sync static assets to S3
+        run: >-
+          aws s3 sync . "s3://${{env.BUCKET}}" --delete
+          --exclude ".git/*"
+          --exclude "README.md"
+          --exclude ".gitignore"
+          --exclude ".github/*"
+          --exclude ".DS_Store"
+          --exclude "*.mp4"
+          --exclude "*.ogg"
+      # The CloudFront distribution id is not hard-wired: look it up at deploy
+      # time by its alias (doubletop.jonas-miederer.de) so the infra stack owns
+      # the distribution and nothing needs manual syncing. Fail clearly if the
+      # distribution does not exist yet.
+      - name: Invalidate CloudFront cache
+        run: |
+          DIST_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?contains(Aliases.Items, 'doubletop.jonas-miederer.de')].Id | [0]" --output text)
+          if [ -z "$DIST_ID" ] || [ "$DIST_ID" = "None" ]; then
+            echo "No CloudFront distribution found for alias doubletop.jonas-miederer.de"
+            exit 1
+          fi
+          aws cloudfront create-invalidation --distribution-id "$DIST_ID" --paths "/*"
