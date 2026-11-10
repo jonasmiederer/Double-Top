@@ -37,7 +37,7 @@ Each version raises `APP_VERSION` in `index.html` (it's shown in the header) and
 
 The app is hosted at [doubletop.jonas-miederer.de](https://doubletop.jonas-miederer.de). Pushing to `main` triggers the GitHub Action in [.github/workflows/deploy.yml](.github/workflows/deploy.yml), which:
 
-1. Syncs the static files (`index.html`) to the `doubletop.jonas-miederer.de` S3 bucket in region `eu-central-1`, excluding repo and meta files (`.git`, `.github`, `README.md`, `.gitignore`, `.DS_Store`), the README image (`*.png`), and the sound source files (`*.mp4`, `*.ogg`, which are embedded in `index.html`).
+1. Syncs the static files (`index.html`, `robots.txt`, `sitemap.xml`, and `doubletop.png` as the social share image) to the `doubletop.jonas-miederer.de` S3 bucket in region `eu-central-1`, excluding repo and meta files (`.git`, `.github`, `README.md`, `.gitignore`, `.DS_Store`) and the sound source files (`*.mp4`, `*.ogg`, which are embedded in `index.html`).
 2. Looks up the CloudFront distribution by its `doubletop.jonas-miederer.de` alias (so the distribution id is never hard-wired) and invalidates `/*`.
 
 There is no build step. The S3 bucket and CloudFront distribution are provisioned by the separate [jonas-miederer.infra](https://github.com/jonasmiederer/jonas-miederer.infra) repository.

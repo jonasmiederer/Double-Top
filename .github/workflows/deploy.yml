@@ -18,7 +18,8 @@ jobs:
             aws-region: ${{env.AWS_REGION}}
       # Sync the static site to the S3 bucket (region eu-central-1). The bucket
       # name matches the subdomain. Exclude repo/meta files and the sound source
-      # files (they are embedded as base64 in index.html).
+      # files (they are embedded as base64 in index.html). doubletop.png is
+      # deployed because it is the social share image (og:image).
       - name: Sync static assets to S3
         run: >-
           aws s3 sync . "s3://${{env.BUCKET}}" --delete
@@ -29,7 +30,6 @@ jobs:
           --exclude ".DS_Store"
           --exclude "*.mp4"
           --exclude "*.ogg"
-          --exclude "*.png"
       # The CloudFront distribution id is not hard-wired: look it up at deploy
       # time by its alias (doubletop.jonas-miederer.de) so the infra stack owns
       # the distribution and nothing needs manual syncing. Fail clearly if the
