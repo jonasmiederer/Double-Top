@@ -36,7 +36,7 @@ jobs:
       # distribution does not exist yet.
       - name: Invalidate CloudFront cache
         run: |
-          DIST_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?contains(Aliases.Items, 'doubletop.jonas-miederer.de')].Id | [0]" --output text)
+          DIST_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?contains(Aliases.Items || \`[]\`, 'doubletop.jonas-miederer.de')].Id | [0]" --output text)
           if [ -z "$DIST_ID" ] || [ "$DIST_ID" = "None" ]; then
             echo "No CloudFront distribution found for alias doubletop.jonas-miederer.de"
             exit 1
